@@ -42,6 +42,8 @@ Mapping examples:
 - `8080:127.0.0.1:80`: forward port 80 from remote host (where SSH server is running) to port 8080 of local container
 - `127.0.0.1:80:127.0.0.1:80`: forward port 80 from remote host (where SSH server is running) to port 80 of local container, and only accesible by the container itself (not a common behaviour...)
 
+Multiple mappings can be defined splitting them by `;` (when running docker run, the value must be passed between quotes, like `-e MAPPINGS="8080:127.0.0.1:80"`)
+
 ### SSH server settings
 
 - `SSH_HOST`: remote host/IP to connect to (required)
