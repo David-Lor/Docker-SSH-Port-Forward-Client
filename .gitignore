@@ -1,3 +1,10 @@
 .vscode
 .idea
 build*/
+.pytest_cache/
+*.pyc
+__pycache__/
+*.pem
+*.pub
+ssh_key*
+id_rsa*
