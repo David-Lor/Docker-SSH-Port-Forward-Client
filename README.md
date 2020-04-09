@@ -1,7 +1,12 @@
 # Docker SSH Port Forward Client
 
+[![Docker Hub](https://img.shields.io/badge/%20-DockerHub-blue?logo=docker&style=plastic)](https://hub.docker.com/r/davidlor/ssh-port-forward-client)
+![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/davidlor/ssh-port-forward-client?sort=date&style=plastic)
+
 Container to connect to a remote SSH server and forward one or more remote TCP ports.
 Image based on python:3-slim-buster, using autossh for SSH connection.
+
+**This image is experimental and might have undesirable effects. Use it under your responsability!**
 
 ## Getting started
 
@@ -14,8 +19,8 @@ docker run -d --name=ssh_portforward \
   -e "MAPPINGS=8080:127.0.0.1:80" \
   -e "SSH_HOST=192.168.0.100" \
   -e "SSH_USER=foo" -p 8080:8080 \
-  -v "/home/user/ssh_key:/ssh_key:ro"
-  david-lor/ssh-port-forward
+  -v "/home/user/ssh_key:/ssh_key:ro" \
+  davidlor/ssh-port-forward-client:dev
 ```
 
 Now, port 80 of remote host should be accesible from port 8080 within and without the container.
