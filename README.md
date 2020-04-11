@@ -57,12 +57,14 @@ Multiple mappings can be defined splitting them by `;` (when running docker run,
 
 ### Other settings
 
-- `SSH_IPV6`: set to 1 to connect using IPv6 (default: `0` - use IPv4)
+- `SSH_COMPRESSION`: set to 1 to enable SSH Compression (default: `0`)
+- `SSH_IPV6`: set to `1` to connect using IPv6 (default: `0` - use IPv4)
 - `SSH_KEY_LOCATION`: where to read SSH key from, inside container (default: `/ssh_key`)
 - `SSH_KEY_WRITE_LOCATION`: the SSH key read from `SSH_KEY_LOCATION` is copied to this path, to ensure the file permissions are correct
 
 ## Changelog
 
+- 0.1.1: add setting to enable compression
 - 0.0.1: initial release
 
 ## TODO
@@ -73,7 +75,6 @@ Multiple mappings can be defined splitting them by `;` (when running docker run,
 - Update mappings in real time, avoiding downtime
 - Allow reverse port forwarding
 - Allow proxy tunnel
-- Allow to enable/disable compression
 - Allow to set autossh reconnection settings
 - Allow to set custom SSH options (for unsupported settings)
 - Allow to provide SSH server public key for host verification

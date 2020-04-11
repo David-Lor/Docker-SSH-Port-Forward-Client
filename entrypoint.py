@@ -28,6 +28,7 @@ class Settings:
         self.read_ssh_key_location = self.getenv("SSH_KEY_LOCATION")
         self.write_ssh_key_location = self.getenv("SSH_KEY_WRITE_LOCATION")
         self.ipv6 = int(self.getenv("SSH_IPV6"))
+        self.compression = int(self.getenv("SSH_COMPRESSION"))
 
     @staticmethod
     def getenv(key, default_value=None, allow_empty=False) -> Optional[str]:
@@ -73,6 +74,9 @@ class Settings:
     def ipv_to_command(self) -> str:
         return "-6" if self.ipv6 else "-4"
 
+    def compression_to_command(self) -> List[str]:
+        return ["-C"] if self.compression else []
+
 
 def setup_ssh_key(settings: Settings):
     if not os.path.exists(settings.write_ssh_key_location):
@@ -87,6 +91,7 @@ def run_ssh(settings: Settings):
         "-i", settings.write_ssh_key_location,
         "-o", "StrictHostKeyChecking=no",
         "-p", settings.port, settings.ipv_to_command(),
+        *settings.compression_to_command(),
         settings.login_to_command()
     ]
 
