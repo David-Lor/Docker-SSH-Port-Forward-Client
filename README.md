@@ -10,6 +10,8 @@ Image based on python:3-slim-buster, using autossh for SSH connection.
 
 ## Getting started
 
+*Make sure your SSH server is configured properly to allow TCP port forwarding*
+
 - The following example will forward port `80` from remote host to port `8080` on local container, which is finally exposed.
 - The remote host is `192.168.0.100`, with a SSH server available at default port 22 with user `foo`.
 - A SSH private key without password protection is required to connect to the remote server with the given user, and is bind mounted on `/ssh_key` path inside the container.
@@ -49,6 +51,15 @@ Mapping examples:
 
 Multiple mappings can be defined splitting them by `;` (when running docker run, the value must be passed between quotes, like `-e MAPPINGS="8080:127.0.0.1:80"`)
 
+#### Reverse port forwarding
+
+Any mapping that starts with a `R` is considered a reverse port forward. This allows to map a port on the client network to the remote server network.
+
+By defining the following setting: `-e MAPPINGS="R8080:127.0.0.1:80"`, the port 80 on the client host will be accessible on the port 8080 on the remote SSH server host.
+Notice that you might have to set container network to `host` in order to forward host ports.
+
+Reverse and non-reverse mappings can be combined on the same connection, thus, the same container.
+
 ### SSH server settings
 
 - `SSH_HOST`: remote host/IP to connect to (required)
@@ -64,6 +75,7 @@ Multiple mappings can be defined splitting them by `;` (when running docker run,
 
 ## Changelog
 
+- 0.2.1: allow defining reverse port forwarding mappings
 - 0.1.1: add setting to enable compression
 - 0.0.1: initial release
 
@@ -73,11 +85,11 @@ Multiple mappings can be defined splitting them by `;` (when running docker run,
 - Allow login with password only (no key)
 - Define mappings & settings through file
 - Update mappings in real time, avoiding downtime
-- Allow reverse port forwarding
 - Allow proxy tunnel
 - Allow to set autossh reconnection settings
 - Allow to set custom SSH options (for unsupported settings)
 - Allow to provide SSH server public key for host verification
 - Add healthcheck based on forwarded ports
 - Add automated tests
+- Add sshd_config server settings examples
 - Multi-arch support
