@@ -1,6 +1,5 @@
 FROM python:3-slim-buster
 
-ARG USERNAME=user
 ENV MAPPINGS="" \
     SSH_USER="" \
     SSH_HOST="" \
@@ -14,10 +13,6 @@ RUN apt-get -yq update && \
     apt-get -yq install autossh && \
     rm -rf /var/lib/apt/lists/*
 
-RUN useradd -ms /bin/bash $USERNAME
-USER $USERNAME
-WORKDIR /home/$USERNAME
-
-COPY entrypoint.py ./
+COPY entrypoint.py /
 
 CMD ["python", "-u", "entrypoint.py"]

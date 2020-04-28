@@ -47,7 +47,7 @@ Mapping examples:
 - `80`: forward port 80 from remote host (where SSH server is running) to port 80 of local container
 - `192.168.0.200:80`: forward port 80 from the host 192.168.0.200 (visible by the SSH server) to port 80 of local container
 - `8080:127.0.0.1:80`: forward port 80 from remote host (where SSH server is running) to port 8080 of local container
-- `127.0.0.1:80:127.0.0.1:80`: forward port 80 from remote host (where SSH server is running) to port 80 of local container, and only accesible by the container itself (not a common behaviour...)
+- `127.0.0.1:80:127.0.0.1:80`: forward port 80 from remote host (where SSH server is running) to port 80 of local container, and only accesible by the container itself (or by the host, if network=host)
 
 Multiple mappings can be defined splitting them by `;` (when running docker run, the value must be passed between quotes, like `-e MAPPINGS="8080:127.0.0.1:80"`)
 
@@ -76,6 +76,7 @@ Reverse and non-reverse mappings can be combined on the same connection, thus, t
 
 ## Changelog
 
+- 0.3.1: use root user on container to avoid problems with SSH key read permissions or mapping on privileged ports
 - 0.2.1: allow defining reverse port forwarding mappings
 - 0.1.1: add setting to enable compression
 - 0.0.1: initial release
