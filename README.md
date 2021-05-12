@@ -10,6 +10,8 @@ Image based on python:3-slim-buster, using autossh for SSH connection.
 
 ## Getting started
 
+*Make sure your SSH server is configured properly to allow TCP port forwarding*
+
 - The following example will forward port `80` from remote host to port `8080` on local container, which is finally exposed.
 - The remote host is `192.168.0.100`, with a SSH server available at default port 22 with user `foo`.
 - A SSH private key without password protection is required to connect to the remote server with the given user, and is bind mounted on `/ssh_key` path inside the container.
@@ -45,9 +47,18 @@ Mapping examples:
 - `80`: forward port 80 from remote host (where SSH server is running) to port 80 of local container
 - `192.168.0.200:80`: forward port 80 from the host 192.168.0.200 (visible by the SSH server) to port 80 of local container
 - `8080:127.0.0.1:80`: forward port 80 from remote host (where SSH server is running) to port 8080 of local container
-- `127.0.0.1:80:127.0.0.1:80`: forward port 80 from remote host (where SSH server is running) to port 80 of local container, and only accesible by the container itself (not a common behaviour...)
+- `127.0.0.1:80:127.0.0.1:80`: forward port 80 from remote host (where SSH server is running) to port 80 of local container, and only accesible by the container itself (or by the host, if network=host)
 
 Multiple mappings can be defined splitting them by `;` (when running docker run, the value must be passed between quotes, like `-e MAPPINGS="8080:127.0.0.1:80"`)
+
+#### Reverse port forwarding
+
+Any mapping that starts with a `R` is considered a reverse port forward. This allows to map a port on the client network to the remote server network.
+
+By defining the following setting: `-e MAPPINGS="R8080:127.0.0.1:80"`, the port 80 on the client host will be accessible on the port 8080 on the remote SSH server host.
+Notice that you might have to set container network to `host` in order to forward host ports.
+
+Reverse and non-reverse mappings can be combined on the same connection, thus, the same container.
 
 ### SSH server settings
 
@@ -57,12 +68,17 @@ Multiple mappings can be defined splitting them by `;` (when running docker run,
 
 ### Other settings
 
-- `SSH_IPV6`: set to 1 to connect using IPv6 (default: `0` - use IPv4)
+- `SSH_COMPRESSION`: set to 1 to enable SSH Compression (default: `0`)
+- `SSH_IPV6`: set to `1` to connect using IPv6 (default: `0` - use IPv4)
 - `SSH_KEY_LOCATION`: where to read SSH key from, inside container (default: `/ssh_key`)
 - `SSH_KEY_WRITE_LOCATION`: the SSH key read from `SSH_KEY_LOCATION` is copied to this path, to ensure the file permissions are correct
+- You can define [autossh Environment settings](https://linux.die.net/man/1/autossh) on the container and they will be used (example: `AUTOSSH_DEBUG` set to `1` to enable verbose debug output for autossh)
 
 ## Changelog
 
+- 0.3.1: use root user on container to avoid problems with SSH key read permissions or mapping on privileged ports
+- 0.2.1: allow defining reverse port forwarding mappings
+- 0.1.1: add setting to enable compression
 - 0.0.1: initial release
 
 ## TODO
@@ -71,12 +87,11 @@ Multiple mappings can be defined splitting them by `;` (when running docker run,
 - Allow login with password only (no key)
 - Define mappings & settings through file
 - Update mappings in real time, avoiding downtime
-- Allow reverse port forwarding
 - Allow proxy tunnel
-- Allow to enable/disable compression
 - Allow to set autossh reconnection settings
 - Allow to set custom SSH options (for unsupported settings)
 - Allow to provide SSH server public key for host verification
 - Add healthcheck based on forwarded ports
 - Add automated tests
+- Add sshd_config server settings examples
 - Multi-arch support

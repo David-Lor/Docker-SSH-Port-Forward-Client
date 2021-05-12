@@ -8,3 +8,4 @@ __pycache__/
 *.pub
 ssh_key*
 id_rsa*
+keys/
