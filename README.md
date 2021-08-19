@@ -75,7 +75,8 @@ Reverse and non-reverse mappings can be combined on the same connection, thus, t
 - `SSH_IPV6`: set to `1` to connect using IPv6 (default: `0` - use IPv4)
 - `SSH_KEY_LOCATION`: where to read SSH key from, inside container (default: `/ssh_key`)
 - `SSH_KEY_WRITE_LOCATION`: the SSH key read from `SSH_KEY_LOCATION` is copied to this path, to ensure the file permissions are correct
-- You can define [autossh Environment settings](https://linux.die.net/man/1/autossh) on the container and they will be used (example: `AUTOSSH_DEBUG` set to `1` to enable verbose debug output for autossh)
+- `AUTOSSH_PORT`: base monitoring port to use in AutoSSH (default: `0` = disabled)
+- You can define other [autossh Environment settings](https://linux.die.net/man/1/autossh) on the container and they will be used (example: `AUTOSSH_DEBUG` set to `1` to enable verbose debug output for autossh)
 
 ## TODO
 

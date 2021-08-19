@@ -1,4 +1,4 @@
-FROM python:3-slim-buster
+FROM python:3-alpine
 
 ENV MAPPINGS="" \
     SSH_USER="" \
@@ -7,11 +7,10 @@ ENV MAPPINGS="" \
     SSH_IPV6="0" \
     SSH_KEY_LOCATION="/ssh_key" \
     SSH_KEY_WRITE_LOCATION="/tmp/my_ssh_key" \
-    SSH_COMPRESSION="0"
+    SSH_COMPRESSION="0" \
+    AUTOSSH_PORT="0"
 
-RUN apt-get -yq update && \
-    apt-get -yq install autossh && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk --no-cache update && apk --no-cache add autossh
 
 COPY entrypoint.py /
 
