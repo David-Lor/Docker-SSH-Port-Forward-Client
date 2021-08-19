@@ -49,7 +49,10 @@ Mapping examples:
 - `8080:127.0.0.1:80`: forward port 80 from remote host (where SSH server is running) to port 8080 of local container
 - `127.0.0.1:80:127.0.0.1:80`: forward port 80 from remote host (where SSH server is running) to port 80 of local container, and only accesible by the container itself (or by the host, if network=host)
 
-Multiple mappings can be defined splitting them by `;` (when running docker run, the value must be passed between quotes, like `-e MAPPINGS="8080:127.0.0.1:80"`)
+Multiple mappings can be defined by:
+
+- Using a single `MAPPINGS` env var, and splitting them by `;` (when running docker run, the value must be passed between quotes, like `-e MAPPINGS="8080:127.0.0.1:80; 4443:127.0.0.1:443"`). Spaces are ignored.
+- Using multiple environment variables, starting with `MAPPING`. For example, they could be named like "MAPPING1", "MAPPING_1", "MAPPING_SSH", and so on. Inside each env var, one or many mappings can be defined. All of them will be merged and used.
 
 #### Reverse port forwarding
 
@@ -73,13 +76,6 @@ Reverse and non-reverse mappings can be combined on the same connection, thus, t
 - `SSH_KEY_LOCATION`: where to read SSH key from, inside container (default: `/ssh_key`)
 - `SSH_KEY_WRITE_LOCATION`: the SSH key read from `SSH_KEY_LOCATION` is copied to this path, to ensure the file permissions are correct
 - You can define [autossh Environment settings](https://linux.die.net/man/1/autossh) on the container and they will be used (example: `AUTOSSH_DEBUG` set to `1` to enable verbose debug output for autossh)
-
-## Changelog
-
-- 0.3.1: use root user on container to avoid problems with SSH key read permissions or mapping on privileged ports
-- 0.2.1: allow defining reverse port forwarding mappings
-- 0.1.1: add setting to enable compression
-- 0.0.1: initial release
 
 ## TODO
 
