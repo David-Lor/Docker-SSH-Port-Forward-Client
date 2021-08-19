@@ -77,13 +77,6 @@ Reverse and non-reverse mappings can be combined on the same connection, thus, t
 - `SSH_KEY_WRITE_LOCATION`: the SSH key read from `SSH_KEY_LOCATION` is copied to this path, to ensure the file permissions are correct
 - You can define [autossh Environment settings](https://linux.die.net/man/1/autossh) on the container and they will be used (example: `AUTOSSH_DEBUG` set to `1` to enable verbose debug output for autossh)
 
-## Changelog
-
-- 0.3.1: use root user on container to avoid problems with SSH key read permissions or mapping on privileged ports
-- 0.2.1: allow defining reverse port forwarding mappings
-- 0.1.1: add setting to enable compression
-- 0.0.1: initial release
-
 ## TODO
 
 - Allow SSH keys with password
