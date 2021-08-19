@@ -66,7 +66,9 @@ class Settings:
                 kwargs["local_port"] = sub_chunks.pop()
                 kwargs["local_host"] = sub_chunks.pop()
 
-            mappings.append(Mapping(**kwargs))
+            mapping = Mapping(**kwargs)
+            print("Parsed port mapping:", mapping.__dict__)
+            mappings.append(mapping)
 
         return mappings
 
