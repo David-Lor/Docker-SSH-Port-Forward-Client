@@ -5,6 +5,12 @@ IMAGE_TAG := "ssh-port-forward-client"
 build: ## build the image
 	docker build . -t ${IMAGE_TAG}
 
+buildx: ## build & push the image with docker buildx
+	docker buildx build . --file=./Dockerfile \
+		--platform=${ARCH} \
+		--tag=${IMAGE_TAG} \
+		--output type=image,push=true
+
 start: ## start existing container
 	docker start ${IMAGE_TAG}
 

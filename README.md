@@ -90,4 +90,3 @@ Reverse and non-reverse mappings can be combined on the same connection, thus, t
 - Add healthcheck based on forwarded ports
 - Add automated tests
 - Add sshd_config server settings examples
-- Multi-arch support

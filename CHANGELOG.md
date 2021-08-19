@@ -2,6 +2,7 @@
 
 # dev
 
+- Add multiarch support (linux/amd64, linux/arm/v7)
 - Allow defining port mappings using multiple environment variables (starting with the "MAPPING" prefix)
 
 # 0.3.1
