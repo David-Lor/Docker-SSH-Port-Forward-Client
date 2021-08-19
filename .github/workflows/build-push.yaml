@@ -13,17 +13,13 @@ jobs:
       # Setup
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Install Docker Buildx
-        uses: docker/setup-buildx-action@v1
 
       # Set Docker image tag
       - name: Docker image tag version (on master branch push) to file
-        if: "${{ github.event.push.ref == 'refs/heads/master' }}"
+        if: github.ref == 'refs/heads/master'
         run: "echo latest > docker_tag_version.txt"
       - name: Docker image tag version (on develop branch push) to file
-        if: "${{ github.event.push.ref == 'refs/heads/develop' }}"
+        if: github.ref == 'refs/heads/develop'
         run: "echo dev > docker_tag_version.txt"
       - name: Read extracted image tag version from file
         id: get_docker_tag_version_from_file
@@ -33,6 +29,14 @@ jobs:
       - name: Set image tag version to variable
         id: get_image_tag_version
         run: echo ::set-output name=VERSION::$(echo ${{ steps.get_docker_tag_version_from_file.outputs.content }})
+
+      # Setup building dependencies
+      - name: Install QEMU
+        uses: docker/setup-qemu-action@v1
+        if: success()
+      - name: Install Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        if: success()
 
       # Docker login
       - name: Login to DockerHub
