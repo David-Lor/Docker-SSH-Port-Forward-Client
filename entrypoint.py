@@ -20,17 +20,33 @@ class Mapping:
         return [beginning, ":".join(mapping_chunks)]
 
 
+class SettingsConst:
+    mapping_prefix = "MAPPING"
+    mapping_split_char = ";"
+    ssh_user = "SSH_USER"
+    ssh_host = "SSH_HOST"
+    ssh_port = "SSH_PORT"
+    ssh_key_location_read = "SSH_KEY_LOCATION"
+    ssh_key_location_write = "SSH_KEY_WRITE_LOCATION"
+    ssh_ipv6 = "SSH_IPV6"
+    ssh_compression = "SSH_COMPRESSION"
+
+
 class Settings:
     def __init__(self):
-        raw_mappings = self.getenv("MAPPINGS")
-        self.mappings = self.parse_mappings(raw_mappings)
-        self.user = self.getenv("SSH_USER")
-        self.host = self.getenv("SSH_HOST")
-        self.port = self.getenv("SSH_PORT")
-        self.read_ssh_key_location = self.getenv("SSH_KEY_LOCATION")
-        self.write_ssh_key_location = self.getenv("SSH_KEY_WRITE_LOCATION")
-        self.ipv6 = int(self.getenv("SSH_IPV6"))
-        self.compression = int(self.getenv("SSH_COMPRESSION"))
+        raw_mappings_chunks = self.load_mappings()
+        self.mappings = self.parse_mappings(raw_mappings_chunks)
+        if not self.mappings:
+            print("No port mappings defined or none of them are valid")
+            exit(1)
+
+        self.user = self.getenv(SettingsConst.ssh_user)
+        self.host = self.getenv(SettingsConst.ssh_host)
+        self.port = self.getenv(SettingsConst.ssh_port)
+        self.read_ssh_key_location = self.getenv(SettingsConst.ssh_key_location_read)
+        self.write_ssh_key_location = self.getenv(SettingsConst.ssh_key_location_write)
+        self.ipv6 = int(self.getenv(SettingsConst.ssh_ipv6))
+        self.compression = int(self.getenv(SettingsConst.ssh_compression))
 
     @staticmethod
     def getenv(key, default_value=None, allow_empty=False) -> Optional[str]:
@@ -41,15 +57,23 @@ class Settings:
         return value
 
     @staticmethod
-    def parse_mappings(raw_mappings) -> List[Mapping]:
-        raw_mapping_chunks = raw_mappings.split(";")
-        if not raw_mapping_chunks:
-            print("No port mappings defined!")
-            exit(0)
+    def load_mappings() -> List[str]:
+        """Load all the environment variables used for port mappings. Return the raw mappings chunks, corresponding
+        to each mapping parsed from all the environment variables available."""
+        raw_mappings_chunks = list()
+        for key, value in os.environ.items():
+            if key.startswith(SettingsConst.mapping_prefix):
+                value_mappings_chunks = [v.strip() for v in value.split(SettingsConst.mapping_split_char) if v]
+                raw_mappings_chunks.extend(value_mappings_chunks)
 
+        return raw_mappings_chunks
+
+    @staticmethod
+    def parse_mappings(raw_mappings_chunks: List[str]) -> List[Mapping]:
+        """Given raw mapping chunks, parse them and return Mapping objects. Invalid mappings are ignored."""
         mappings = list()
 
-        for chunk in raw_mapping_chunks:
+        for chunk in raw_mappings_chunks:
             kwargs = dict()
 
             if chunk.startswith("R"):

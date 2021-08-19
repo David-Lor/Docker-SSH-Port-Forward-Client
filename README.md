@@ -49,7 +49,10 @@ Mapping examples:
 - `8080:127.0.0.1:80`: forward port 80 from remote host (where SSH server is running) to port 8080 of local container
 - `127.0.0.1:80:127.0.0.1:80`: forward port 80 from remote host (where SSH server is running) to port 80 of local container, and only accesible by the container itself (or by the host, if network=host)
 
-Multiple mappings can be defined splitting them by `;` (when running docker run, the value must be passed between quotes, like `-e MAPPINGS="8080:127.0.0.1:80"`)
+Multiple mappings can be defined by:
+
+- Using a single `MAPPINGS` env var, and splitting them by `;` (when running docker run, the value must be passed between quotes, like `-e MAPPINGS="8080:127.0.0.1:80; 4443:127.0.0.1:443"`). Spaces are ignored.
+- Using multiple environment variables, starting with `MAPPING`. For example, they could be named like "MAPPING1", "MAPPING_1", "MAPPING_SSH", and so on. Inside each env var, one or many mappings can be defined. All of them will be merged and used.
 
 #### Reverse port forwarding
 
