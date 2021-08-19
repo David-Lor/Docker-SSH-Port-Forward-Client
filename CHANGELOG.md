@@ -4,6 +4,7 @@
 
 - Change base image to Alpine
 - Default AutoSSH Monitoring Port setting to disabled (requires being specified in alpine autossh)
+- Allow choosing between AutoSSH or vanilla SSH client
 - Add multiarch support (linux/amd64, linux/arm/v7)
 - Allow defining port mappings using multiple environment variables (starting with the "MAPPING" prefix)
 

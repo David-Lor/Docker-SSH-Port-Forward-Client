@@ -8,6 +8,7 @@ ENV MAPPINGS="" \
     SSH_KEY_LOCATION="/ssh_key" \
     SSH_KEY_WRITE_LOCATION="/tmp/my_ssh_key" \
     SSH_COMPRESSION="0" \
+    AUTOSSH="1" \
     AUTOSSH_PORT="0"
 
 RUN apk --no-cache update && apk --no-cache add autossh

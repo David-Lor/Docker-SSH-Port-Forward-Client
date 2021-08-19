@@ -30,6 +30,7 @@ class SettingsConst:
     ssh_key_location_write = "SSH_KEY_WRITE_LOCATION"
     ssh_ipv6 = "SSH_IPV6"
     ssh_compression = "SSH_COMPRESSION"
+    use_autossh = "AUTOSSH"
 
 
 class Settings:
@@ -47,6 +48,7 @@ class Settings:
         self.write_ssh_key_location = self.getenv(SettingsConst.ssh_key_location_write)
         self.ipv6 = int(self.getenv(SettingsConst.ssh_ipv6))
         self.compression = int(self.getenv(SettingsConst.ssh_compression))
+        self.use_autossh = int(self.getenv(SettingsConst.use_autossh))
 
     @staticmethod
     def getenv(key, default_value=None, allow_empty=False) -> Optional[str]:
@@ -111,6 +113,9 @@ class Settings:
     def compression_to_command(self) -> List[str]:
         return ["-C"] if self.compression else []
 
+    def ssh_client_to_command(self) -> str:
+        return "autossh" if self.use_autossh else "ssh"
+
 
 def setup_ssh_key(settings: Settings):
     if not os.path.exists(settings.write_ssh_key_location):
@@ -121,7 +126,8 @@ def setup_ssh_key(settings: Settings):
 
 def run_ssh(settings: Settings):
     command = [
-        "autossh", "-N", *settings.mappings_to_command(),
+        settings.ssh_client_to_command(),
+        "-N", *settings.mappings_to_command(),
         "-i", settings.write_ssh_key_location,
         "-o", "StrictHostKeyChecking=no",
         "-p", settings.port, settings.ipv_to_command(),
