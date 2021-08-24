@@ -4,6 +4,11 @@ on:
     branches:
       - master
       - develop
+  workflow_dispatch:
+    inputs:
+      tag_version:
+        description: "Tag-Version to upload the image"
+        required: true
 
 jobs:
   build-push:
@@ -17,18 +22,24 @@ jobs:
       # Set Docker image tag
       - name: Docker image tag version (on master branch push) to file
         if: github.ref == 'refs/heads/master'
-        run: "echo latest > docker_tag_version.txt"
+        run: "echo latest > /tmp/docker_tag_version.txt"
       - name: Docker image tag version (on develop branch push) to file
         if: github.ref == 'refs/heads/develop'
-        run: "echo dev > docker_tag_version.txt"
+        run: "echo dev > /tmp/docker_tag_version.txt"
+      - name: Docker image tag version (on workflow dispatch) to file
+        if: github.event.inputs.tag_version
+        run: "echo ${{ github.event.inputs.tag_version }} > /tmp/docker_tag_version.txt"
       - name: Read extracted image tag version from file
         id: get_docker_tag_version_from_file
         uses: juliangruber/read-file-action@v1
         with:
-          path: "./docker_tag_version.txt"
+          path: "/tmp/docker_tag_version.txt"
       - name: Set image tag version to variable
         id: get_image_tag_version
         run: echo ::set-output name=VERSION::$(echo ${{ steps.get_docker_tag_version_from_file.outputs.content }})
+      - name: Validate image tag version
+        id: validate_image_tag_version
+        run: "test ${{ steps.get_image_tag_version.outputs.VERSION }} || exit 1"
 
       # Setup building dependencies
       - name: Install QEMU
