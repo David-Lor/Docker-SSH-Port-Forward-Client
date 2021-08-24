@@ -27,6 +27,9 @@ docker run -d --name=ssh_portforward \
 
 Now, port 80 of remote host should be accesible from port 8080 within and without the container.
 
+Builds of this image are available for **linux/amd64** and **linux/arm/v7**.
+If you encounter problems running a container on armv7, take a look at [this issue](https://github.com/docker-library/python/issues/637#issuecomment-904544160).
+
 ## Configuration
 
 Currently, the settings are provided through environment variables, which are the following:
