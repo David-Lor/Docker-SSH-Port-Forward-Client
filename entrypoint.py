@@ -4,6 +4,7 @@ import os
 import subprocess
 import contextlib
 from typing import List, Optional
+import base64
 
 
 class Mapping:
@@ -30,10 +31,12 @@ class SettingsConst:
     ssh_key_location_write = "SSH_KEY_WRITE_LOCATION"
     ssh_ipv6 = "SSH_IPV6"
     ssh_compression = "SSH_COMPRESSION"
+    ssh_key_base64 = "SSH_KEY_BASE64"
 
 
 class Settings:
     def __init__(self):
+        print("hi")
         raw_mappings_chunks = self.load_mappings()
         self.mappings = self.parse_mappings(raw_mappings_chunks)
         if not self.mappings:
@@ -47,6 +50,7 @@ class Settings:
         self.write_ssh_key_location = self.getenv(SettingsConst.ssh_key_location_write)
         self.ipv6 = int(self.getenv(SettingsConst.ssh_ipv6))
         self.compression = int(self.getenv(SettingsConst.ssh_compression))
+        self.ssh_key_base64 = self.getenv(SettingsConst.ssh_key_base64)
 
     @staticmethod
     def getenv(key, default_value=None, allow_empty=False) -> Optional[str]:
@@ -113,10 +117,16 @@ class Settings:
 
 
 def setup_ssh_key(settings: Settings):
-    if not os.path.exists(settings.write_ssh_key_location):
-        print("Copying SSH key...")
-        subprocess.call(["cp", settings.read_ssh_key_location, settings.write_ssh_key_location])
+    if settings.ssh_key_base64 and len(settings.ssh_key_base64) > 0:
+        key = base64.b64decode(settings.ssh_key_base64).decode("utf8")
+        with open(settings.write_ssh_key_location, "w") as key_file:
+            key_file.write(key)
         subprocess.call(["chmod", "600", settings.write_ssh_key_location])
+    else:
+        if not os.path.exists(settings.write_ssh_key_location):
+            print("Copying SSH key...")
+            subprocess.call(["cp", settings.read_ssh_key_location, settings.write_ssh_key_location])
+            subprocess.call(["chmod", "600", settings.write_ssh_key_location])
 
 
 def run_ssh(settings: Settings):
